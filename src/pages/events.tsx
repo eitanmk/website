@@ -1,43 +1,46 @@
 import React from 'react';
-import { Container, Header, Message, Card, Segment, Label, Grid } from 'semantic-ui-react';
-import { navigate, Link } from 'gatsby';
+import { Container, Header, Message, Segment, Label, Grid, Modal } from 'semantic-ui-react';
+import { Link } from 'gatsby';
 
 import Layout from '../components/layout';
 import LazyImage from '../components/lazyimage';
+import EventInfoModal from '../components/event_info_modal';
 
-function getEventCard(eventInfo) {
-    return (
-        <Segment padded>
-            <Label attached="bottom">
-                {eventInfo.event_name}
-            </Label>
-            <LazyImage 
-                src={`${process.env.GATSBY_ASSETS_URL}${eventInfo.image}`}
-                size="large"
-                onError={e => e.target.style.visibility = 'hidden'}
-            />
-        </Segment>
-    );
+type EventInstance = {
+    event_details?: boolean,
+    event_id: number,
+    event_name: string,
+    fixed_instance_id: number,
+    image: string,
+    instance_id: number,
 }
 
 function EventsPage() {
-    const [eventsData, setEventsData] = React.useState([]);
+    const [eventsData, setEventsData] = React.useState<EventInstance[]>([]);
+    const [leaderboardData, setLeaderboardData] = React.useState(null);
     const [loadingError, setLoadingError] = React.useState(null);
+    const [modalEventInstance, setModalEventInstance] = React.useState(null);
 
-    // load the events data once on component mount
+    // load the events and leaderboard data once on component mount
     React.useEffect(() => {
-        async function loadEventsData() {
+        async function loadData() {
             try {
-                const fetchResp = await fetch('/structured/event_instances.json')
-                const data = await fetchResp.json();
-                setEventsData(data.reverse());
+                const fetchEventResp = await fetch('/structured/event_instances.json')
+                const eventDataList = await fetchEventResp.json();
+                setEventsData(eventDataList.reverse());
+
+                const fetchLeaderboardResp = await fetch('/structured/event_leaderboards.json');
+                const leaderboardDataList = await fetchLeaderboardResp.json();
+                const keyedLeaderboard = {};
+                leaderboardDataList.forEach(entry => keyedLeaderboard[entry.instance_id] = entry);
+                setLeaderboardData(keyedLeaderboard);
             }
             catch (e) {
                 setLoadingError(e);
             }
         }
 
-        loadEventsData();
+        loadData();
     }, []);
 
     return (
@@ -53,15 +56,40 @@ function EventsPage() {
                 <Grid columns={3}>
                     {eventsData.map(eventInfo => (
                         <Grid.Column key={eventInfo.instance_id}>
-                            {eventInfo.event_details ?
-                                <Link to={`/event_info?instance_id=${eventInfo.instance_id}`}>
-                                    {getEventCard(eventInfo)}
-                                </Link>
-                                : getEventCard(eventInfo)
-                            }
+                            <div
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => setModalEventInstance(eventInfo)}
+                            >
+                                <Segment padded>
+                                    <Label attached="bottom">
+                                        {eventInfo.event_name}
+                                    </Label>
+                                    <LazyImage
+                                        src={`${process.env.GATSBY_ASSETS_URL}${eventInfo.image}`}
+                                        size="large"
+                                        onError={e => e.target.style.visibility = 'hidden'}
+                                    />
+                                </Segment>
+                            </div>
                         </Grid.Column>
                     ))}
                 </Grid>
+                {modalEventInstance !== null && (
+                    <Modal
+                        open
+                        size="large"
+                        onClose={() => setModalEventInstance(null)}
+                        closeIcon
+                    >
+                        <EventInfoModal
+                            instanceId={modalEventInstance.instance_id}
+                            eventName={modalEventInstance.event_name}
+                            image={modalEventInstance.image}
+                            hasDetails={modalEventInstance.event_details}
+                            leaderboard={leaderboardData[modalEventInstance.instance_id].leaderboard}
+                        />
+                    </Modal>
+                )}
             </Container>
         </Layout>
     );
