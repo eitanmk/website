@@ -5,20 +5,16 @@ function LeaderboardTab({leaderboard}) {
     return (
         <>
             <Message>
-                If this event is currently active, the leaderboard below might be out of date. (Data is updated only a couple of times a week)
+                If this event is currently active, the leaderboard below might be out of date.
+                (Data is updated only a couple of times a week)
             </Message>
-            <Table celled selectable striped collapsing unstackable compact='very'>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell width={1}>Rank</Table.HeaderCell>
-                        <Table.HeaderCell width={3}>Name</Table.HeaderCell>
-                        <Table.HeaderCell width={1}>Score</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
+            <Table celled striped compact='very'>
                 <Table.Body>
                     {leaderboard.map(member => (
                         <Table.Row key={member.dbid}>
-                            <Table.Cell>{member.rank}</Table.Cell>
+                            <Table.Cell style={{ fontSize: '1.25em' }}>
+                                Rank: {member.rank}
+                            </Table.Cell>
                             <Table.Cell>
                                 <div
                                     style={{
@@ -43,7 +39,9 @@ function LeaderboardTab({leaderboard}) {
                                     </div>
                                 </div>
                             </Table.Cell>
-                            <Table.Cell>{member.score}</Table.Cell>
+                            <Table.Cell style={{ fontSize: '1.25em' }}>
+                                Score: {member.score}
+                            </Table.Cell>
                         </Table.Row>
                     ))}
                 </Table.Body>
