@@ -1,6 +1,9 @@
 import React from 'react';
 import {Container, Header, Image, Tab } from 'semantic-ui-react';
 
+import EventInformationTab from './event_info_tabs/event_information';
+import ThresholdRewardsTab from './event_info_tabs/threshold_rewards';
+import RankedRewardsTab from './event_info_tabs/ranked_rewards';
 import LeaderboardTab from './event_info_tabs/leaderboard';
 
 type EventInfoModalProps = {
@@ -24,9 +27,36 @@ function EventInfoModal({instanceId, eventName, image, hasDetails, leaderboard}:
         }
 
         fetchEventData();
-    }, []);
+	}, []);
 
-    const panes = [
+	const eventInfoPanes = [
+		{
+			menuItem: 'Event Information',
+			render: () => (
+				<Tab.Pane attached={false}>
+					<EventInformationTab eventData={eventData} />
+				</Tab.Pane>
+			),
+		},
+		{
+			menuItem: 'Threshold Rewards',
+			render: () => (
+				<Tab.Pane attached={false}>
+					<ThresholdRewardsTab eventData={eventData} />
+				</Tab.Pane>
+			),
+		},
+		{
+			menuItem: 'Ranked Rewards',
+			render: () => (
+				<Tab.Pane attached={false}>
+					<RankedRewardsTab eventData={eventData} />
+				</Tab.Pane>
+			),
+		},
+	];
+
+    const leaderboardPane = [
         {
             menuItem: 'Leaderboard',
             render: () => (
@@ -35,7 +65,14 @@ function EventInfoModal({instanceId, eventName, image, hasDetails, leaderboard}:
                 </Tab.Pane>
             ),
         },
-    ];
+	];
+
+	let panes;
+	if (hasDetails && eventData) {
+		panes = eventInfoPanes.concat(leaderboardPane);
+	} else {
+		panes = leaderboardPane;
+	}
 
     return (
         <Container style={{ padding: '2em' }}>
