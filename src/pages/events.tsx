@@ -81,13 +81,15 @@ function EventsPage() {
                         onClose={() => setModalEventInstance(null)}
                         closeIcon
                     >
-                        <EventInfoModal
-                            instanceId={modalEventInstance.instance_id}
-                            eventName={modalEventInstance.event_name}
-                            image={modalEventInstance.image}
-                            hasDetails={modalEventInstance.event_details}
-                            leaderboard={leaderboardData[modalEventInstance.instance_id].leaderboard}
-                        />
+                        <Modal.Header>{modalEventInstance.event_name}</Modal.Header>
+                        <Modal.Content scrolling>
+                            <EventInfoModal
+                                instanceId={modalEventInstance.instance_id}
+                                image={modalEventInstance.image}
+                                hasDetails={modalEventInstance.event_details}
+                                leaderboard={leaderboardData[modalEventInstance.instance_id].leaderboard}
+                            />
+                        </Modal.Content>
                     </Modal>
                 )}
             </Container>

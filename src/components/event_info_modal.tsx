@@ -8,13 +8,12 @@ import LeaderboardTab from './event_info_tabs/leaderboard';
 
 type EventInfoModalProps = {
     instanceId: number,
-    eventName: string,
     image: string,
     hasDetails: boolean,
     leaderboard: Array<object>,
 }
 
-function EventInfoModal({instanceId, eventName, image, hasDetails, leaderboard}: EventInfoModalProps) {
+function EventInfoModal({instanceId, image, hasDetails, leaderboard}: EventInfoModalProps) {
     const [eventData, setEventData] = React.useState(null);
 
     React.useEffect(() => {
@@ -75,8 +74,7 @@ function EventInfoModal({instanceId, eventName, image, hasDetails, leaderboard}:
 	}
 
     return (
-        <Container style={{ padding: '2em' }}>
-            <Header as="h1">{eventName}</Header>
+        <Container style={{ padding: '1em' }}>
             <Image
                 src={`${process.env.GATSBY_ASSETS_URL}${image}`}
                 fluid

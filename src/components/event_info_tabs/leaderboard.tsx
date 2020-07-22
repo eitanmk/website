@@ -1,6 +1,8 @@
 import React from 'react';
 import { Message, Table } from 'semantic-ui-react';
 
+import { getIconPath } from '../../utils/assets';
+
 function LeaderboardTab({leaderboard}) {
     return (
         <>
@@ -26,7 +28,7 @@ function LeaderboardTab({leaderboard}) {
                                     <div style={{ gridArea: 'icon' }}>
                                         <img
                                             width={48}
-                                            src={`${process.env.GATSBY_ASSETS_URL}${member.avatar ? member.avatar.file.substr(1).replace(/\//g, '_') + '.png' : 'crew_portraits_cm_empty_sm.png'}`}
+                                            src={member.avatar ? getIconPath(member.avatar) : `${process.env.GATSBY_ASSETS_URL}crew_portraits_cm_empty_sm.png`}
                                         />
                                     </div>
                                     <div style={{ gridArea: 'stats' }}>
