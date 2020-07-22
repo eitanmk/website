@@ -1,6 +1,8 @@
 import React from 'react';
 import { Header, Card, Image } from 'semantic-ui-react';
 
+import {getIconPath} from '../../utils/assets';
+
 type Content = {
     content_type: string,
 };
@@ -37,7 +39,7 @@ function EventInformationTab({eventData}) {
 
     const crewData = featured_crew.map(crew => ({
         name: crew.full_name,
-        image: `${process.env.GATSBY_ASSETS_URL}${crew.portrait.file.substr(1).replace(/\//g, '_') + '.png'}`,
+        image: getIconPath(crew.portrait),
         rarity: crew.rarity,
         skills: Object.keys(crew.skills).map(skill => `${process.env.GATSBY_ASSETS_URL}atlas/icon_${skill}.png`),
         traits: crew.traits.map(trait => `${trait[0].toUpperCase()}${trait.substr(1).replace(/_/g, ' ')}`),
